@@ -19,7 +19,7 @@ func init() {
     // and "stocks"). Everything will be lowercased as well, so there's no
     // difference between "ETF" and "etf".
     trigger := &nlp.StructuredInput{
-        Commands: []string{"gimme"},
+        Commands: []string{"what"},
         Objects: []string{"date", "time"},
     }
 
