@@ -23,6 +23,7 @@ func init() {
         Objects: []string{"date", "time"},
     }
 
+
     // Tell Abot how this plugin will respond to new conversations and follow-up
     // requests.
     fns := &dt.PluginFns{Run: Run, FollowUp: FollowUp}
@@ -34,6 +35,17 @@ func init() {
     if err != nil {
         log.Fatalln("building", err)
     }
+
+        // Add vocab handlers to the plugin
+    p.Vocab = dt.NewVocab(
+        dt.VocabHandler{
+            Fn: kwGetTime,
+            Trigger: &nlp.StructuredInput{
+                Commands: []string{"what"},
+                Objects: []string{"time", "date"},
+            },
+        },
+    )
 }
 
 // Abot calls Run the first time a user interacts with a plugin
@@ -47,6 +59,12 @@ func Run(in *dt.Msg) (string, error) {
 // will be called the next it's triggered.  This Run/FollowUp design allows us
 // to reset a plugin's state when a user changes conversations.
 func FollowUp(in *dt.Msg) (string, error) {
+    return p.Vocab.HandleKeywords(in), nil
+}
+
+func kwGetTime(in *dt.Msg) (resp string) {
+    // Perform some lookup. We'll leave the implementation of this as an
+    // exercise to reader.
     var t = "There you go: \n" + time.Now().Format(time.UnixDate)
-    return t,nil
+    return t
 }
